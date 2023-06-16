@@ -1,10 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:ital,wght@0,100;1,100&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Viga");
 
+body {
+  background-color: #f6f8f9;
+}
+
 #root {
   min-height: 100vh;
   width: 100vw;
-  background-color: #f6f8f9;
   font-family: "Open Sans", "Helvetica", sans-serif;
 }
 
@@ -13,6 +16,7 @@
 }
 
 .error-text {
+  margin: 0;
   color: #D7260F;
 }
 
@@ -30,7 +34,11 @@ button.primary {
 }
 
 button.primary:hover {
-  background-color: #6650cc;
+  background-color: #5B3BED;
+}
+
+button.primary:active {
+  background-color: #472BC4;
 }
 
 button.secondary {
@@ -43,8 +51,19 @@ button.secondary {
 }
 
 button.secondary:hover {
-  background-color: #785ef0;
-  color: white;
+  background-color: #EBE8FD;
+  color: #5B3BED
+}
+
+button.secondary:active {
+  background-color: #C0B4F8;
+  color: #472BC4
+}
+
+button:disabled {
+  background-color: #E7ECEE;
+  color: #97ADB5;
+  pointer-events: none;
 }
 
 button.transparent {
@@ -84,3 +103,194 @@ a:hover {
       transform: rotate(360deg);
     }
   }
+
+  .onboarding-modal.modal-content {
+    max-width: 450px;
+    min-height: 600px;
+  }
+
+  .onboarding-modal.modal-title {
+    margin-bottom: 1rem;
+  }
+
+  .onboarding-modal.modal-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal {
+    display: flex;
+    align-items: center;  
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-content {
+    border: none;
+    box-shadow: 0px 20px 24px -4px rgba(16, 24, 40, 0.1), 0px 8px 8px -4px rgba(16, 24, 40, 0.04);
+    background-color: #F6F8F9;
+    color: #333333;
+  }
+
+  .modal-header {
+    border: none;
+    padding-bottom: 0px;
+  }
+
+  .modal-img-container {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .modal-desc {
+    flex-grow: 1;
+  }
+
+  .modal-button {
+    border-radius: 4px !important;
+  }
+
+  .modal-full-button {
+    width: 100%;
+    border: 1px solid #785efd !important;
+    margin: 0;
+  }
+
+  .modal-half-button {
+    width: 50%;
+  }
+
+  .modal-right-button {
+    margin: 0 0 0 5px;
+    border: 1px solid transparent !important;
+  }
+  
+  .modal-left-button {
+    margin: 0 5px 0 0;
+  }
+
+  .modal-footer {
+    flex-wrap: nowrap;
+  }
+
+  .page-indicators {
+    display: flex;
+    justify-content: center;
+  }
+
+  .page-indicator-circle {
+    width: 10px;
+    border-radius: 50%;
+    background-color: #B5C5CA;
+    height: 10px;
+    margin: 0 0.25rem;
+  }
+
+  .current {
+    background-color: #785EF0;
+  }
+
+  .display-block {
+    display: block;
+  }
+
+  .user-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 160px;
+    margin-top: 2rem;
+  }
+
+  .user-form-field {
+    display: grid;
+    grid-template-columns: 30% 70%; 
+    margin-bottom: 1rem;
+  }
+
+  .user-form-label {
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .user-form-input {
+    box-sizing: border-box;
+    background: white;
+    border: 1px solid #B5C5CA;;
+    border-radius: 4px;
+  }
+
+  .user-form-error {
+    position: absolute;
+    margin-bottom: 5px;
+  }
+
+  .show {
+    visibility: visible;
+  }
+
+  .hide {
+    visibility: hidden;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    } to {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+  }
+
+  .fade-in {
+    animation: fade-in 0.5s;
+  }
+  
+#first-timer-2-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.typewriter {
+  position: absolute;
+  left: 0;
+  padding-left: 24px;
+  padding-bottom: 28px;
+  z-index: 2;
+  color: #eb5d5e;
+  font-family: "Open Sans";
+  font-size: 16px;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: typing 2s steps(200, end);
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+}
+
+@keyframes typing {
+  from {
+      width: 0;
+  }
+  to {
+      width: 100%;
+  }
+}
+
+a {
+  text-decoration: underline;
+  color: #785EF0;
+}
+
+#box-arrow-right {
+  padding-left: 0.25rem;
+  padding-bottom: 0.5rem;
+}

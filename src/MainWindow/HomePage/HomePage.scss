@@ -25,6 +25,7 @@
     align-items: center;
     flex-direction: column;
   }
+
   #url-bar-label {
     text-align: center;
   }
@@ -61,6 +62,7 @@
     border: none;
     background-color: transparent;
     font-size: 0.875rem;
+    white-space: nowrap;
   }
 
   #page-limit-adjuster {
@@ -192,6 +194,16 @@
     background-repeat: no-repeat;
     background-size: 16px 12px;
     padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+  }
+
+  #edit-user-details {
+    background-color: #E7ECEE;
+    border: none;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+  }
+  
+  #auto-submit {
+    padding-bottom: 8px; 
   }
 
   #home-page-footer {

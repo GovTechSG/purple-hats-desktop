@@ -1,8 +1,10 @@
-const { app: electronApp, BrowserWindow, ipcMain } = require("electron");
+const { app: electronApp, BrowserWindow, ipcMain, shell } = require("electron");
+const fs = require("fs");
 const EventEmitter = require("events");
 const constants = require("./constants");
 const scanManager = require("./scanManager");
 const updateManager = require("./updateManager");
+const userDataManager = require("./userDataManager.js");
 const userDataFormManager = require("./userDataFormManager");
 
 const app = electronApp;
@@ -38,6 +40,8 @@ function createMainWindow() {
 
 // TODO set ipcMain messages
 app.on("ready", async () => {
+  // create settings file if it does not exist 
+  await userDataManager.init();
   const launchWindowReady = new Promise((resolve) => {
     ipcMain.once("guiReady", () => {
       resolve();
@@ -81,14 +85,41 @@ app.on("ready", async () => {
   });
 
   createMainWindow();
-  userDataFormManager.init(mainWindow);
-  scanManager.init(mainWindow);
+  scanManager.init(mainWindow);  
+
+  ipcMain.on("openLink", (_event, url) => {
+    shell.openExternal(url);
+  })
+  
   await mainReady;
   mainWindow.webContents.send("appStatus", "ready");
   mainWindow.webContents.send("versionNumber", constants.appVersion);
+
+  const userDataEvent = new EventEmitter(); 
+  userDataEvent.on("userDataDoesNotExist", (setUserData) => {  
+    mainWindow.webContents.send("userDataExists", "doesNotExist"); 
+    ipcMain.once("userDataReceived", (_event, data) => {
+      setUserData(data);
+    });
+  })
+  userDataEvent.on("userDataDoesExist", () => {
+    mainWindow.webContents.send("userDataExists", "exists"); 
+  })
+  
+  await userDataManager.setData(userDataEvent);
+  await userDataFormManager.init();
 });
 
 app.on("quit", () => {
+  /* Synchrnously removes file upon quitting the app. Restarts/Shutdowns in
+  Windows will not trigger this event */
+  if (fs.existsSync(constants.scanResultsPath)){
+    fs.rmSync(constants.scanResultsPath, { recursive: true }, err => {
+      if (err) {
+        console.error(`Error while deleting ${constants.scanResultsPath}.`);
+      }
+    })
+  }
   updateManager.killChildProcess();
   scanManager.killChildProcess();
 });

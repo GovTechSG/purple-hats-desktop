@@ -1,6 +1,9 @@
 import { useState, useRef } from "react";
 import Button from "../../common/components/Button";
 import SelectField from "./SelectField";
+import { ReactComponent as ChevronUpIcon } from "../../assets/chevron-up.svg";
+import { ReactComponent as ChevronDownIcon } from "../../assets/chevron-down.svg";
+import ButtonSvgIcon from "../../common/components/ButtonSvgIcon";
 
 const AdvancedScanOptions = ({
   scanTypeOptions,
@@ -61,9 +64,15 @@ const AdvancedScanOptions = ({
         >
           Advanced scan options{" "}
           {openAdvancedOptionsMenu ? (
-            <i className="bi bi-chevron-up" />
+            <ButtonSvgIcon
+              className={`chevron-up-icon`}
+              svgIcon={<ChevronUpIcon />}
+            />
           ) : (
-            <i className="bi bi-chevron-down" />
+            <ButtonSvgIcon
+              className={`chevron-down-icon`}
+              svgIcon={<ChevronDownIcon />}
+            />
           )}
         </Button>
       </div>

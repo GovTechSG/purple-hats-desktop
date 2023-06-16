@@ -6,7 +6,7 @@ import "./LaunchWindow.scss";
 const LaunchWindow = () => {
   const [launchStatus, setLaunchStatus] = useState(null);
   const [promptUpdate, setPromptUpdate] = useState(false);
-
+  
   useEffect(() => {
     window.services.launchStatus((s) => {
       if (s === "promptUpdate") {

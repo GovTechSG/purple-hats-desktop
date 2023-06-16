@@ -8,8 +8,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 15vh;
-    width: 50%;
+    margin: auto;
   }
 
   #main-contents {
@@ -21,18 +20,30 @@
   }
 
   #form-container {
-    background-color: #d9d9d9;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    flex-direction: column;
   }
 
-  .bi-check-circle {
-    font-size: 3rem;
-    color: #039855;
+  .check-circle-icon {
+    margin-bottom: 1.5rem;
   }
+
+  .box-arrow-up-right-icon {
+    margin-right: 0.5rem;
+  }
+
+  .download-icon {
+    margin-right: 0.5rem;
+  }
+
+  
+  // .bi-check-circle {
+  //   font-size: 3rem;
+  //   color: #039855;
+  // }
 
   h1 {
     font-family: "Viga";
@@ -70,9 +81,13 @@
   }
 
   #main-contents a:before {
-    content: "\F116   ";
-    font-family: bootstrap-icons;
-    position: relative;
-    top: 2.5px;
+    // content: "\F116   ";
+    // font-family: bootstrap-icons;
+    // position: relative;
+    // top: 2.5px;
+  }
+
+  .return-icon {
+    margin-right: 0.5rem;
   }
 }

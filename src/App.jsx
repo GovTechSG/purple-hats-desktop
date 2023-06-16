@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MainWindow from "./MainWindow";
 import LaunchWindow from "./LaunchWindow";
+import "./sgds.css"
 import "./App.css";
 
 function App() {

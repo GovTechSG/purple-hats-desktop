@@ -7,14 +7,16 @@ const {
   releaseUrl,
   enginePath,
   getEngineVersion,
-  appDataPath,
+  appPath,
   backendPath,
   updateBackupsFolder,
   scanResultsPath,
-  customFlowGeneratedScriptsPath,
   phZipPath,
+  createPlaywrightContext,
+  deleteClonedProfiles
 } = require("./constants");
 const { silentLogger } = require("./logs");
+const { readUserDataFromFile } = require("./userDataManager");
 
 let currentChildProcess;
 
@@ -25,7 +27,7 @@ const killChildProcess = () => {
 };
 
 const execCommand = async (command) => {
-  let options = { cwd: appDataPath };
+  let options = { cwd: appPath };
 
   const execution = new Promise((resolve) => {
     const process = exec(command, options, (err, _stdout, stderr) => {
@@ -73,12 +75,10 @@ const backUpData = async () => {
 
   if (os.platform() === "win32") {
     command = `mkdir "${updateBackupsFolder}" &&\
-    move "${scanResultsPath}" "${updateBackupsFolder}" &\
-    move "${customFlowGeneratedScriptsPath}" "${updateBackupsFolder}"`;
+    move "${scanResultsPath}" "${updateBackupsFolder}"`;
   } else {
     command = `mkdir '${updateBackupsFolder}' &&
-    (mv '${scanResultsPath}' '${updateBackupsFolder}' || true) &&
-    (mv '${customFlowGeneratedScriptsPath}' '${updateBackupsFolder}' || true)`;
+    (mv '${scanResultsPath}' '${updateBackupsFolder}' || true)`;
   }
 
   await execCommand(command);
@@ -88,7 +88,7 @@ const cleanUpBackend = async () => {
   let command;
 
   if (os.platform() === "win32") {
-    command = `rmdir /s /q "${backendPath}"`;
+    command = `rmdir /s /q '${backendPath}'`;
   } else {
     command = `rm -rf '${backendPath}'`;
   }
@@ -97,10 +97,15 @@ const cleanUpBackend = async () => {
 };
 
 const downloadBackend = async () => {
+  // if (os.platform() === "win32"){
+  //   return
+  // }
+
   let downloadUrl;
 
   try {
-    const { data } = await axiosInstance.get(releaseUrl);
+    // const { data } = await axiosInstance.get(releaseUrl);
+    const data = await getBackendData();
     downloadUrl = getDownloadUrlFromReleaseData(data);
   } catch (e) {
     console.log(
@@ -109,16 +114,15 @@ const downloadBackend = async () => {
     );
     console.log("Attemping to download latest from GitHub directly");
 
-    if (os.platform() === "win32") {
-      downloadUrl =
-        "https://github.com/GovTechSG/purple-hats/releases/latest/download/purple-hats-portable-windows.zip";
-    } else {
-      downloadUrl =
-        "https://github.com/GovTechSG/purple-hats/releases/latest/download/purple-hats-portable-mac.zip";
-    }
+    // if (os.platform() === "win32") {
+    //   downloadUrl =
+    //     "https://github.com/GovTechSG/purple-hats/releases/latest/download/purple-hats-portable-windows.zip";
+    // } else {
+    downloadUrl ="https://github.com/GovTechSG/purple-hats/releases/latest/download/purple-hats-portable-mac.zip";
+    //}
   }
 
-  const command = `curl "${downloadUrl}" -o "${phZipPath}" -L && mkdir "${backendPath}"`;
+  const command = `curl '${downloadUrl}' -o '${phZipPath}' -L && mkdir '${backendPath}'`;
 
   await execCommand(command);
 };
@@ -127,18 +131,14 @@ const unzipBackendAndCleanUp = async () => {
   let command;
 
   if (os.platform() === "win32") {
-    command = `tar -xf "${phZipPath}" -C "${backendPath}" &&\
-    del "${phZipPath}" &&\
-    (for /D %s in ("${updateBackupsFolder}"\\*) do move "%s" "${enginePath}") &&\
-    rmdir /s /q "${updateBackupsFolder}" &&\
-    cd "${backendPath}" &&\
+    // command = `tar -xf "${phZipPath}" -C "${backendPath}" &&\
+    // del "${phZipPath}" &&\
+    command = `cd '${backendPath}' &&\
     ".\\hats_shell.cmd" echo "Initialise" 
     `;
   } else {
     command = `tar -xf '${phZipPath}' -C '${backendPath}' &&
     rm '${phZipPath}' &&
-    (mv '${updateBackupsFolder}'/* '${enginePath}' || true) &&
-    (rm -rf '${updateBackupsFolder}' || true) &&
     cd '${backendPath}' &&
     './hats_shell.sh' echo "Initialise"
     `;
@@ -149,7 +149,9 @@ const unzipBackendAndCleanUp = async () => {
 
 const isLatestBackendVersion = async () => {
   try {
-    const { data } = await axiosInstance.get(releaseUrl);
+    // const { data } = await axiosInstance.get(releaseUrl);
+    const data = await getBackendData();
+
     const latestVersion = data.tag_name;
     const engineVersion = getEngineVersion();
 
@@ -162,6 +164,29 @@ const isLatestBackendVersion = async () => {
     return true;
   }
 };
+
+const parseResponse = (response) => {
+  // Remove HTML tags using regular expressions
+  const removedHTMLTags = response.replace(/<[^>]*>/g, ''); 
+  const data = JSON.parse(removedHTMLTags);
+  return data;
+}
+
+const getBackendData = async () => {
+  const browser = readUserDataFromFile().browser;
+  const {context, browserChannel} = await createPlaywrightContext(browser, { width: 10, height: 10}); 
+  const page = await context.newPage(); 
+  await page.goto(releaseUrl); 
+
+  const response = await page.content(); 
+  const data = parseResponse(response);
+
+  await page.close();
+  await context.close();
+
+  deleteClonedProfiles(browserChannel);
+  return data;
+}
 
 const run = async (updaterEventEmitter) => {
   const processesToRun = [];
@@ -190,7 +215,11 @@ const run = async (updaterEventEmitter) => {
     } else if (phZipExists) {
       updaterEventEmitter.emit("settingUp");
       processesToRun.push(unzipBackendAndCleanUp);
-    } else {
+    } else  {
+      if (os.platform() === "win32"){
+        return
+      }     
+
       updaterEventEmitter.emit("checking");
       let isUpdateAvailable;
       isUpdateAvailable = !(await isLatestBackendVersion());

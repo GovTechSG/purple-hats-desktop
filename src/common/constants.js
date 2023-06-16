@@ -1,3 +1,5 @@
+import boxRightArrow from "../assets/box-right-arrow.png";
+
 export const scanTypes = {
   "Website crawl": "website",
   "Sitemap crawl": "sitemap",
@@ -11,6 +13,7 @@ export const viewportTypes = [
   "Custom width...",
 ];
 
+// key is what will be displayed on the GUI, value is the internal value that Playwright recognises
 export const devices = {
   "Blackberry PlayBook": "Blackberry PlayBook",
   "BlackBerry Z30": "BlackBerry Z30",
@@ -64,18 +67,20 @@ export const devices = {
   "Google Pixel 4": "Pixel 4",
   "Google Pixel 4a (5G)": "Pixel 4a (5G)",
   "Google Pixel 5": "Pixel 5",
-  "Motorola Moto G4": "Moto G4"
-}
+  "Motorola Moto G4": "Moto G4",
+};
 
 // exit codes returned by Purple HATS cli when there is an error with the URL provided
-export const urlErrorCodes = new Set([11, 12, 13, 14, 15]);
-export const urlErrorTypes = {
+export const cliErrorCodes = new Set([11, 12, 13, 14, 15, 16, 21]);
+export const cliErrorTypes = {
   invalidUrl: 11,
   cannotBeResolved: 12,
   errorStatusReceived: 13,
   systemError: 14,
   notASitemap: 15,
-}
+  unauthorisedBasicAuth: 16,
+  profileDataCopyError: 21,
+};
 
 export const userDataFormDetails = {
   // production form
@@ -85,3 +90,29 @@ export const userDataFormDetails = {
   urlScannedField: "641d6f416e65530012b57e29",
   scanTypeField: "641d6fc6448fc900122f8684",
 };
+
+export const userDataFormInputFields = {
+  formUrl:
+    "https://docs.google.com/forms/d/1tg8WYKWOgAo-DRsKNczZQF7OFeT00kjpmL1DPlL_VoI/formResponse",
+  websiteUrlField: "entry.1562345227",
+  scanTypeField: "entry.1148680657",
+  emailField: "entry.52161304",
+  nameField: "entry.1787318910",
+};
+
+export const policyUrlElem = (
+  <a
+    role="link"
+    className="link"
+    href="#"
+    onClick={(e) => {handleClickLink(e, "https://www.tech.gov.sg/privacy/")}}
+  >
+    GovTech's Privacy Policy
+    <img id="box-arrow-right" src={boxRightArrow}></img>
+  </a>
+);
+
+const handleClickLink = (e, url) => {
+  e.preventDefault();
+  window.services.openLink(url);
+}

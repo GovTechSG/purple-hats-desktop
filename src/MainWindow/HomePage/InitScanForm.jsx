@@ -2,6 +2,9 @@ import { useState, useRef } from "react";
 import Button from "../../common/components/Button";
 import AdvancedScanOptions from "./AdvancedScanOptions";
 import { scanTypes, viewportTypes, devices } from "../../common/constants";
+import ButtonSvgIcon from "../../common/components/ButtonSvgIcon";
+import { ReactComponent as ChevronUpIcon } from "../../assets/chevron-up.svg";
+import { ReactComponent as ChevronDownIcon } from "../../assets/chevron-down.svg";
 
 const InitScanForm = ({ startScan, prevUrlErrorMessage }) => {
   const [openPageLimitAdjuster, setOpenPageLimitAdjuster] = useState(false);
@@ -60,9 +63,17 @@ const InitScanForm = ({ startScan, prevUrlErrorMessage }) => {
                 <span className="purple-text">
                   {pageLimit} pages{" "}
                   {openPageLimitAdjuster ? (
-                    <i className="bi bi-chevron-up" />
+                    <ButtonSvgIcon
+                      className={`chevron-up-icon`}
+                      svgIcon={<ChevronUpIcon />}
+                    />
                   ) : (
-                    <i className="bi bi-chevron-down" />
+                    // <i className="bi bi-chevron-up" />
+                    <ButtonSvgIcon
+                      className={`chevron-down-icon`}
+                      svgIcon={<ChevronDownIcon />}
+                    />
+                    // <i className="bi bi-chevron-down" />
                   )}
                 </span>
               </Button>
